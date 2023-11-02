@@ -15,8 +15,8 @@
 
 #define CAMERA_PIO           pio0
 #define CAMERA_BASE_PIN_SM_0 10
-#define CAMERA_BASE_PIN_SM_s 12
-#define CAMERA_XCLK_PIN      21
+#define CAMERA_BASE_PIN_SM_s 14
+#define CAMERA_XCLK_PIN      24
 #define CAMERA_SDA           0
 #define CAMERA_SCL           1
 
@@ -57,7 +57,7 @@ int main() {
 
 		.pio = CAMERA_PIO,
 		.xclk_pin = CAMERA_XCLK_PIN,
-		.xclk_divider = 6,
+		.xclk_divider = 9,
 		.base_pin_sm_0 = CAMERA_BASE_PIN_SM_0,
 		.base_pin_sm_s = CAMERA_BASE_PIN_SM_s,
 		.base_dma_channel = -1,
