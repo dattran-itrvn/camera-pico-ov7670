@@ -6,6 +6,19 @@
         "pico.h": "c",
         "pio.h": "c",
         "stdlib.h": "c",
-        "i2c.h": "c"
+        "i2c.h": "c",
+        "array": "c",
+        "chrono": "c",
+        "compare": "c",
+        "functional": "c",
+        "ratio": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "istream": "c",
+        "ostream": "c",
+        "ranges": "c",
+        "string_view": "cpp",
+        "initializer_list": "cpp"
     }
 }
