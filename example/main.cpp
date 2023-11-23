@@ -19,8 +19,8 @@
 
 #define CAMERA_PIO           pio0
 #define CAMERA_BASE_PIN_SM_0 10
-#define CAMERA_BASE_PIN_SM_s 14
-#define CAMERA_XCLK_PIN      24
+#define CAMERA_BASE_PIN_SM_s 12
+#define CAMERA_XCLK_PIN      21
 #define CAMERA_SDA      2
 #define CAMERA_SCL      3
 
@@ -36,9 +36,6 @@ static inline int __i2c_read_blocking(void *i2c_handle, uint8_t addr, uint8_t *d
 	return i2c_read_blocking((i2c_inst_t *)i2c_handle, addr, dst, len, false);
 }
 
-
-int8_t* input_buffer = nullptr;
-int8_t* output_buffer = nullptr;
 int size_input;
 int size_output; 
 float prediction;
@@ -63,10 +60,13 @@ int main() {
 		printf("Size output: %d, ", size_output);
 
 		scale = ml_model.input_scale(); 
-		printf("Scale: %f, ",scale);
+		printf("Scale Input: %f, ",scale);
 		zero_point = ml_model.input_zero_point();
-		printf("Zero Point: %d\r\n", zero_point);
+		printf("Zero Point Input: %d\r\n", zero_point);
     }
+
+	int8_t input_buffer[size_input] = {};
+	float output_buffer[size_output] = {};
 
 	const uint LED_PIN = PICO_DEFAULT_LED_PIN;
 	gpio_init(LED_PIN);
@@ -126,7 +126,7 @@ int main() {
 					// printf(" %s", snum);
 					
 					// Scale input model
-					input_buffer[buf->strides[0] * y + x] = (buf->data[0][buf->strides[0] * y + x] - zero_point) * scale;
+					input_buffer[buf->strides[0] * y + x] = buf->data[0][buf->strides[0] * y + x] + zero_point;
 				}
 			}
 			start = time_us_64();

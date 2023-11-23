@@ -22,7 +22,7 @@ class MLModel {
         void* output_data();
         int input_size() const;
         int output_size() const;
-        void predict(int8_t *data_input, int8_t *data_output);
+        void predict(int8_t *data_input, float *data_output);
         float input_scale() const;
         int32_t input_zero_point() const;
     private:

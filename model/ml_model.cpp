@@ -96,22 +96,27 @@ void* MLModel::output_data()
     return _output_tensor->data.data;
 }
 
-void MLModel::predict(int8_t* data_in, int8_t* data_out)
+void MLModel::predict(int8_t* data_in, float* data_out)
 {
+    printf("Input: ");
     for (int inp = 0; inp < _input_tensor->bytes; inp++){
         _input_tensor->data.int8[inp] = data_in[inp];
+        printf("%d ", _input_tensor->data.int8[inp]);
     }
-
+    printf("\n");
     TfLiteStatus invoke_status = _interpreter->Invoke();
 
     if (invoke_status != kTfLiteOk) {
         return ;
     }
 
+    printf("Output: ");
     for(int out = 0; out < _output_tensor->bytes; out++){
         int8_t y_quantized = _output_tensor->data.int8[out];
-        *(data_out+out) = (y_quantized - _output_tensor->params.zero_point) * _output_tensor->params.scale;
+        *(data_out + out) = (float)(y_quantized - _output_tensor->params.zero_point) * _output_tensor->params.scale;
+        printf("%f ", *(data_out + out));
     }
+    printf("\n");
 }
 
 float MLModel::input_scale() const
