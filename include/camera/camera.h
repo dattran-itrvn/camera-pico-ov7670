@@ -6,6 +6,10 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #include "hardware/dma.h"
@@ -134,5 +138,9 @@ struct camera_buffer *camera_buffer_alloc(uint32_t format, uint16_t width, uint1
 
 // Free a buffer previously allocated by camera_buffer_alloc.
 void camera_buffer_free(struct camera_buffer *buf);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __CAMERA_H__ */
