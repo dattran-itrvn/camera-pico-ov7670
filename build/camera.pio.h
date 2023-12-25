@@ -8,8 +8,6 @@
 #include "hardware/pio.h"
 #endif
 
-#define PIN_OFFS_VSYNC 0
-#define PIN_OFFS_HREF 1
 #define PIN_OFFS_D0 0
 #define PIN_OFFS_D1 1
 #define PIN_OFFS_D2 2
@@ -18,7 +16,10 @@
 #define PIN_OFFS_D5 5
 #define PIN_OFFS_D6 6
 #define PIN_OFFS_D7 7
-#define PIN_OFFS_PXCLK 8
+#define PIN_OFFS_VSYNC 8
+#define PIN_OFFS_HREF 9
+#define PIN_OFFS_BTN 10
+#define PIN_OFFS_PXCLK 11
 
 // --------------- //
 // camera_pio_byte //
@@ -30,9 +31,9 @@
 static const uint16_t camera_pio_byte_program_instructions[] = {
             //     .wrap_target
     0x20d4, //  0: wait   1 irq, 4 rel               
-    0x21a8, //  1: wait   1 pin, 8               [1] 
+    0x25ab, //  1: wait   1 pin, 11              [5] 
     0x4008, //  2: in     pins, 8                    
-    0x2028, //  3: wait   0 pin, 8                   
+    0x202b, //  3: wait   0 pin, 11                  
     0xc004, //  4: irq    nowait 4                   
             //     .wrap
 };
@@ -50,10 +51,10 @@ static inline pio_sm_config camera_pio_byte_program_get_default_config(uint offs
     return c;
 }
 
-static inline pio_sm_config camera_pio_get_byte_sm_config(PIO pio, uint sm, uint offset, uint base_pin_sm_s, uint bpp)
+static inline pio_sm_config camera_pio_get_byte_sm_config(PIO pio, uint sm, uint offset, uint base_pin, uint bpp)
 {
     pio_sm_config c = camera_pio_byte_program_get_default_config(offset);
-    sm_config_set_in_pins(&c, base_pin_sm_s);
+    sm_config_set_in_pins(&c, base_pin);
     sm_config_set_in_shift(&c, true, true, bpp);
     return c;
 }
@@ -74,9 +75,9 @@ static const uint16_t camera_pio_frame_program_instructions[] = {
     0x80a0, //  0: pull   block                      
     0x6040, //  1: out    y, 32                      
     0x80a0, //  2: pull   block                      
-    0x20a0, //  3: wait   1 pin, 0                   
+    0x20a8, //  3: wait   1 pin, 8                   
     0xa027, //  4: mov    x, osr                     
-    0x22a1, //  5: wait   1 pin, 1               [2] 
+    0x22a9, //  5: wait   1 pin, 9               [2] 
     0xc025, //  6: irq    wait 5                     
     0x20c4, //  7: wait   1 irq, 4                   
     0xc025, //  8: irq    wait 5                     
@@ -86,7 +87,7 @@ static const uint16_t camera_pio_frame_program_instructions[] = {
     0xc025, // 12: irq    wait 5                     
     0x20c4, // 13: wait   1 irq, 4                   
     0x0046, // 14: jmp    x--, 6                     
-    0x2021, // 15: wait   0 pin, 1                   
+    0x2029, // 15: wait   0 pin, 9                   
     0x0084, // 16: jmp    y--, 4                     
     0xc020, // 17: irq    wait 0                     
             //     .wrap
@@ -105,21 +106,18 @@ static inline pio_sm_config camera_pio_frame_program_get_default_config(uint off
     return c;
 }
 
-static inline void camera_pio_init_gpios(PIO pio, uint sm, uint base_pin_sm_0, uint base_pin_sm_s)
+static inline void camera_pio_init_gpios(PIO pio, uint sm, uint base_pin)
 {
-    pio_sm_set_consecutive_pindirs(pio, sm, base_pin_sm_0, 2, false);
-    for (uint i = 0; i < 2; i++) {
-        pio_gpio_init(pio, i + base_pin_sm_0);
-    }
-    pio_sm_set_consecutive_pindirs(pio, sm, base_pin_sm_s, 9, false);
-    for (uint j = 0; j < 9; j++) {
-        pio_gpio_init(pio, j + base_pin_sm_s);
+    pio_sm_set_consecutive_pindirs(pio, sm, base_pin, (4 + 8), false);
+    for (uint i = 0; i < (4 + 8); i++) {
+        pio_gpio_init(pio, i + base_pin);
     }
 }
-static inline pio_sm_config camera_pio_get_frame_sm_config(PIO pio, uint sm, uint offset, uint base_pin_sm_0)
+static inline pio_sm_config camera_pio_get_frame_sm_config(PIO pio, uint sm, uint offset, uint base_pin)
 {
     pio_sm_config c = camera_pio_frame_program_get_default_config(offset);
-    sm_config_set_in_pins(&c, base_pin_sm_0);
+    sm_config_set_in_pins(&c, base_pin);
+    sm_config_set_out_shift(&c, true, false, 0);
     return c;
 }
 static inline bool camera_pio_frame_done(PIO pio)

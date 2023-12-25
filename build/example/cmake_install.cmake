@@ -1,4 +1,4 @@
-# Install script for directory: /home/ttb/Desktop/camera-pico-ov7670/example
+# Install script for directory: /home/ai-team/Project/camera-pico-ov7670/example
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -16,12 +16,11 @@
 #include "../model/tflite_model.h"
 #include "../model/ml_model.h"
 
-#define CAMERA_PIO           pio0
-#define CAMERA_BASE_PIN_SM_0 10
-#define CAMERA_BASE_PIN_SM_s 14
-#define CAMERA_XCLK_PIN      24
-#define CAMERA_SDA      2
-#define CAMERA_SCL      3
+#define CAMERA_PIO      pio0
+#define CAMERA_BASE_PIN 10
+#define CAMERA_XCLK_PIN 24
+#define CAMERA_SDA      0
+#define CAMERA_SCL      1
 
 #define THR_PREDICT 0.1
 #define THR_RATIO_FACE_PER_FRAME 0.1
@@ -90,7 +89,7 @@ int main() {
 	gpio_init(LED_PIN);
 	gpio_set_dir(LED_PIN, GPIO_OUT);
 	gpio_put(LED_PIN, 0);
-	i2c_init(i2c1, 100000);
+	i2c_init(i2c0, 100000);
 	gpio_set_function(CAMERA_SDA, GPIO_FUNC_I2C);
 	gpio_set_function(CAMERA_SCL, GPIO_FUNC_I2C);
 	gpio_pull_up(CAMERA_SDA);
@@ -100,13 +99,12 @@ int main() {
 	struct camera_platform_config platform = {
 		.i2c_write_blocking = __i2c_write_blocking,
 		.i2c_read_blocking = __i2c_read_blocking,
-		.i2c_handle = i2c1,
+		.i2c_handle = i2c0,
 
 		.pio = CAMERA_PIO,
 		.xclk_pin = CAMERA_XCLK_PIN,
 		.xclk_divider = 9,
-		.base_pin_sm_0 = CAMERA_BASE_PIN_SM_0,
-		.base_pin_sm_s = CAMERA_BASE_PIN_SM_s,
+		.base_pin = CAMERA_BASE_PIN,
 		.base_dma_channel = -1,
 	};
 	
