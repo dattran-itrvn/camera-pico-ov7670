@@ -19,7 +19,8 @@
 #define PIN_OFFS_VSYNC 8
 #define PIN_OFFS_HREF 9
 #define PIN_OFFS_BTN 10
-#define PIN_OFFS_PXCLK 11
+#define PIN_OFFS__ 11
+#define PIN_OFFS_PXCLK 12
 
 // --------------- //
 // camera_pio_byte //
@@ -31,9 +32,9 @@
 static const uint16_t camera_pio_byte_program_instructions[] = {
             //     .wrap_target
     0x20d4, //  0: wait   1 irq, 4 rel               
-    0x25ab, //  1: wait   1 pin, 11              [5] 
+    0x25ac, //  1: wait   1 pin, 12              [5] 
     0x4008, //  2: in     pins, 8                    
-    0x202b, //  3: wait   0 pin, 11                  
+    0x202c, //  3: wait   0 pin, 12                  
     0xc004, //  4: irq    nowait 4                   
             //     .wrap
 };
@@ -108,8 +109,8 @@ static inline pio_sm_config camera_pio_frame_program_get_default_config(uint off
 
 static inline void camera_pio_init_gpios(PIO pio, uint sm, uint base_pin)
 {
-    pio_sm_set_consecutive_pindirs(pio, sm, base_pin, (4 + 8), false);
-    for (uint i = 0; i < (4 + 8); i++) {
+    pio_sm_set_consecutive_pindirs(pio, sm, base_pin, (5 + 8), false);
+    for (uint i = 0; i < (5 + 8); i++) {
         pio_gpio_init(pio, i + base_pin);
     }
 }

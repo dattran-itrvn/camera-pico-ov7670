@@ -136,10 +136,12 @@ int main() {
 			gpio_put(LED_PIN, 0);
 		} else {
 			int y, x, i, j;
-			for (y = 0; y < height; y++) {
-				for (x = 0; x < width; x++) {
-					data_input[64 * y + x] = buf->data[0][buf->strides[0] * y + x] + zero_point;
+			for (y = 0; y < height; y++) {     // 60
+				for (x = 0; x < width; x++) {	// 60
 					uint8_t v = buf->data[0][buf->strides[0] * y + x];
+					
+					data_input[64 * y + x] = buf->data[0][buf->strides[0] * y + x] + zero_point;
+					
 					char snum[4];
     				int n = sprintf(snum, "%d", v);
 					printf(" %s", snum);
@@ -166,31 +168,31 @@ int main() {
 
 			memset(data_input, 0, size_input);
 			printf("\n");
-			if(frame_id == NUMBER_FRAME_CAL){
-				printf("Small block has face: ");
-				for(int r = 0; r < NUMBER_FRAME_CAL; r++){
-					for(int c = 0; c < 64; c++){
-						res[c] += slick[r][c];
-					}
-				}
-				for(int c = 0; c < 64; c++){
-					float ratio = (float)res[c]/NUMBER_FRAME_CAL;
-					if(ratio > THR_RATIO_FACE_PER_FRAME){
-						printf("%.2f, ", ratio);
-						gpio_put(LED_PIN, 1);
-						sleep_ms(200);
-						gpio_put(LED_PIN, 0);
-						sleep_ms(200);
-					}
-				}
-				frame_id = 0;
-				slick_row = 0;
-				memset(res, 0, 64);
-				memset(slick, 0 , NUMBER_FRAME_CAL*64);
-			}
-			frame_id++;
-			// if (frame_id >= 1000)
+			// if(frame_id == NUMBER_FRAME_CAL){
+			// 	printf("Small block has face: ");
+			// 	for(int r = 0; r < NUMBER_FRAME_CAL; r++){
+			// 		for(int c = 0; c < 64; c++){
+			// 			res[c] += slick[r][c];
+			// 		}
+			// 	}
+			// 	for(int c = 0; c < 64; c++){
+			// 		float ratio = (float)res[c]/NUMBER_FRAME_CAL;
+			// 		if(ratio > THR_RATIO_FACE_PER_FRAME){
+			// 			printf("%.2f, ", ratio);
+			// 			gpio_put(LED_PIN, 1);
+			// 			sleep_ms(200);
+			// 			gpio_put(LED_PIN, 0);
+			// 			sleep_ms(200);
+			// 		}
+			// 	}
 			// 	frame_id = 0;
+			// 	slick_row = 0;
+			// 	memset(res, 0, 64);
+			// 	memset(slick, 0 , NUMBER_FRAME_CAL*64);
+			// }
+			frame_id++;
+			if (frame_id >= 1000)
+				frame_id = 0;
 			
 		}
 	}

@@ -15,7 +15,8 @@
 .define PUBLIC PIN_OFFS_VSYNC    8
 .define PUBLIC PIN_OFFS_HREF     9
 .define PUBLIC PIN_OFFS_BTN      10
-.define PUBLIC PIN_OFFS_PXCLK    11
+.define PUBLIC PIN_OFFS__        11
+.define PUBLIC PIN_OFFS_PXCLK    12
 
 .define BYTE_IRQ_BASE            4
 
@@ -80,9 +81,9 @@ irq wait 0                             ; Signal the CPU that we're done, wait fo
 % c-sdk {
 static inline void camera_pio_init_gpios(PIO pio, uint sm, uint base_pin)
 {
-    pio_sm_set_consecutive_pindirs(pio, sm, base_pin, (4 + 8), false);
+    pio_sm_set_consecutive_pindirs(pio, sm, base_pin, (5 + 8), false);
 
-    for (uint i = 0; i < (4 + 8); i++) {
+    for (uint i = 0; i < (5 + 8); i++) {
         pio_gpio_init(pio, i + base_pin);
     }
 }
