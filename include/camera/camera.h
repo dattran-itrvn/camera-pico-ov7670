@@ -17,8 +17,8 @@ extern "C" {
 
 #include "camera/ov7670.h"
 
-#define CAMERA_WIDTH_DIV8  60
-#define CAMERA_HEIGHT_DIV8 60
+#define CAMERA_WIDTH_DIV8  120
+#define CAMERA_HEIGHT_DIV8 120
 
 #define CAMERA_MAX_N_PLANES 3
 
